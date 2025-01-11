@@ -21,7 +21,7 @@ public class JdrServerApplication {
     @Bean
     public CommandLineRunner defaultDataInitializer() {
         return args -> {
-            if (userRepository.count()==0){
+            if (userRepository.count() == 0 ){
                 User Charles = new User("drizzy" , "ee");
                 User Marco = new User("marco" , "ee");
                 User Tim = new User("tim" , "ee");

@@ -26,4 +26,24 @@ public class UserController {
         List<User> users = userRepository.findAll();
         return ResponseEntity.ok(users.toString());
     }
+    @GetMapping("/marco")
+    public ResponseEntity<String> getMarco() {
+        User user = userRepository.findUserByUsername("marco");
+        return ResponseEntity.ok(user.getUsername());
+    }
+    @GetMapping("/drizzy")
+    public ResponseEntity<String> getDrizzy() {
+        User user = userRepository.findUserByUsername("drizzy");
+        return ResponseEntity.ok(user.getUsername());
+    }
+    @GetMapping("/tim")
+    public ResponseEntity<String> getTim() {
+        User user = userRepository.findUserByUsername("tim");
+        return ResponseEntity.ok(user.getUsername());
+    }
+    @GetMapping("/SummyFrog")
+    public ResponseEntity<String> getSummyFrog() {
+        User user = userRepository.findUserByUsername("SummyFrog");
+        return ResponseEntity.ok(user.getUsername());
+    }
 }
