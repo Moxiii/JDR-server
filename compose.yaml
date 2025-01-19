@@ -6,13 +6,14 @@ services:
       context: ..
       dockerfile: ./JDR-server/Dockerfile
     volumes:
-      - ../JDR-server:/app/Backend:rw
+      - ../JDR-server/src:/app/Backend/src:rw
     depends_on:
        db:
           condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=dev
       - JAVA_OPTS=-Dspring.devtools.restart.enabled=true -Dspring.devtools.livereload.enabled=true
+      - CHOKIDAR_USEPOLLING=true
     restart: unless-stopped
     ports:
       - "8080:8080"
@@ -31,9 +32,7 @@ services:
       - db_data:/var/lib/mysql
     environment:
       MYSQL_DATABASE: jdr
-      MYSQL_USER: root
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_PASSWORD: root
     ports:
       - "3307:3306"
     networks:
