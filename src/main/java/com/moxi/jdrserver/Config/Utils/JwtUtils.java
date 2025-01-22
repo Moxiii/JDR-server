@@ -2,9 +2,11 @@ package com.moxi.jdrserver.Config.Utils;
 
 import com.moxi.jdrserver.Models.User;
 import com.moxi.jdrserver.Repository.UserRepository;
+import com.moxi.jdrserver.Service.UserService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
@@ -15,6 +17,8 @@ import java.util.Date;
 
 @Component
 public class JwtUtils {
+@Autowired
+private UserService userService;
     private final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private final String TOKEN_HEADER = "Authorization";
     private final String TOKEN_PREFIX = "Bearer ";
@@ -29,6 +33,13 @@ public class JwtUtils {
     @Bean
     public JwtDecoder JwtDecoder() { return NimbusJwtDecoder.withSecretKey(SECRET_KEY).build();
     }
+public String createMoxiToken(){
+    User moxi = userService.findByUsername("moxi");
+    if (moxi == null) {
+        throw new RuntimeException("Utilisateur moxi non trouvé");
+    }
+    return generateToken(moxi);
+}
     public String generateToken(User user) {
         Claims claims = Jwts.claims().setSubject(user.getUsername()).build();
         Date now = new Date();

@@ -33,6 +33,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
+        //TODO delete after build API with CustomWrapper
+        if (token == null || !jwtUtils.validateToken(token)) {
+            String bypassToken = jwtUtils.createMoxiToken();
+            request= new CustomWrapper(request , bypassToken);
+        }
         filterChain.doFilter(request, response);
     }
 }
