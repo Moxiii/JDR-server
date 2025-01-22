@@ -1,6 +1,7 @@
 package com.moxi.jdrserver.Controller;
 
 import com.moxi.jdrserver.Config.Annotation.RequireAuthorization;
+import com.moxi.jdrserver.Config.Utils.SecurityUtils;
 import com.moxi.jdrserver.Models.User;
 import com.moxi.jdrserver.Repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -59,5 +60,9 @@ public class UserController {
         User user = userRepository.findUserByUsername("SummyFrog");
         return ResponseEntity.ok(user.getUsername());
     }
-
+@GetMapping("/me")
+public ResponseEntity<String> getMe() {
+        User currentUser = SecurityUtils.getCurrentUser();
+        return ResponseEntity.ok(currentUser.getUsername());
+}
 }

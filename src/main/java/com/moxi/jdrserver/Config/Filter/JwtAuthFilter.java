@@ -1,6 +1,7 @@
 package com.moxi.jdrserver.Config.Filter;
 
 import com.moxi.jdrserver.Config.Utils.JwtUtils;
+import com.moxi.jdrserver.Models.CustomUserDetails;
 import com.moxi.jdrserver.Repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,18 +25,22 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Autowired
     private UserRepository userRepository;
 
-    @Override
+public JwtAuthFilter(JwtUtils jwtUtils)  {
+    this.jwtUtils = jwtUtils;
+}
+
+@Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = jwtUtils.extractTokenFromRequest(request);
         if (token != null && jwtUtils.validateToken(token)) {
             String username = jwtUtils.extractUsername(token);
-            UserDetails userDetails = (UserDetails) userRepository.findUserByUsername(username);
+            UserDetails userDetails = new CustomUserDetails(userRepository.findUserByUsername(username));
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         //TODO delete after build API with CustomWrapper
         if (token == null || !jwtUtils.validateToken(token)) {
-            String bypassToken = jwtUtils.createMoxiToken();
+            String bypassToken = jwtUtils.createBypassToken();
             request= new CustomWrapper(request , bypassToken);
         }
         filterChain.doFilter(request, response);

@@ -25,7 +25,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .requestMatchers("/api/**").permitAll()
                 .and()
-                .addFilterBefore(new JwtAuthFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                 .and()
                 .formLogin()

@@ -17,8 +17,7 @@ import java.util.Date;
 
 @Component
 public class JwtUtils {
-@Autowired
-private UserService userService;
+
     private final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private final String TOKEN_HEADER = "Authorization";
     private final String TOKEN_PREFIX = "Bearer ";
@@ -33,12 +32,12 @@ private UserService userService;
     @Bean
     public JwtDecoder JwtDecoder() { return NimbusJwtDecoder.withSecretKey(SECRET_KEY).build();
     }
-public String createMoxiToken(){
-    User moxi = userService.findByUsername("moxi");
-    if (moxi == null) {
+public String createBypassToken(){
+    User user = userRepository.findUserByUsername("SummyFrog");
+    if (user == null) {
         throw new RuntimeException("Utilisateur moxi non trouvé");
     }
-    return generateToken(moxi);
+    return generateToken(user);
 }
     public String generateToken(User user) {
         Claims claims = Jwts.claims().setSubject(user.getUsername()).build();
