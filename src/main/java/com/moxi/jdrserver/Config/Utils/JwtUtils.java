@@ -21,7 +21,7 @@ public class JwtUtils {
     private final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private final String TOKEN_HEADER = "Authorization";
     private final String TOKEN_PREFIX = "Bearer ";
-    private final long TOKEN_EXPIRATION_TIME = 60*60*1000 *24;
+    private final long TOKEN_EXPIRATION_TIME = 60*60*1000*24;
     private final UserRepository userRepository;
     private final JwtParser jwtParser;
     public JwtUtils(UserRepository userRepository) {
@@ -35,7 +35,7 @@ public class JwtUtils {
 public String createBypassToken(){
     User user = userRepository.findUserByUsername("SummyFrog");
     if (user == null) {
-        throw new RuntimeException("Utilisateur moxi non trouvé");
+        throw new RuntimeException("Utilisateur non trouvé");
     }
     return generateToken(user);
 }
