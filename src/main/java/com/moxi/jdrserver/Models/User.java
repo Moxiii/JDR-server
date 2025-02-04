@@ -1,13 +1,12 @@
 package com.moxi.jdrserver.Models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.List;
 
 import java.util.Date;
 
@@ -25,6 +24,9 @@ public class User {
     private String email;
     private Date createdAt;
     private Date updatedAt;
+
+    @OneToMany(mappedBy = "createdBy")
+    private List<Module> modules;
 
     public User() {
 
