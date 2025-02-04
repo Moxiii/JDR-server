@@ -15,7 +15,7 @@ import java.util.List;
 @Slf4j
 // Sl4j c'est pour les log => utilisation log.warning / log.debug / log.info("text")
 @RestController
-@RequestMapping("user/") // tape sur localhost/user/...
+@RequestMapping("user/") // tape sur localhost:8080/user/...
 public class UserController {
     @Autowired
     private UserService userService;
