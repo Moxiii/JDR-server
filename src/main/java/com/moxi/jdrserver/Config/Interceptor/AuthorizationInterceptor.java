@@ -16,6 +16,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        if(handler instanceof HandlerInterceptor){
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         RequireAuthorization requireAuthorization = handlerMethod.getMethodAnnotation(RequireAuthorization.class);
         String uri = request.getRequestURI();
@@ -27,7 +28,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
                return false;
             }
-        }
+        }}
         return true;
     }
 }
