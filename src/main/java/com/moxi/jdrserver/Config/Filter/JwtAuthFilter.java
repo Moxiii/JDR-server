@@ -1,8 +1,7 @@
 package com.moxi.jdrserver.Config.Filter;
 
 import com.moxi.jdrserver.Config.Utils.JwtUtils;
-import com.moxi.jdrserver.Models.CustomUserDetails;
-import com.moxi.jdrserver.Repository.UserRepository;
+import com.moxi.jdrserver.Service.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +22,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtils jwtUtils;
     @Autowired
-    private UserRepository userRepository;
+    private CustomUserDetailsService customUserDetailService;
 
 public JwtAuthFilter(JwtUtils jwtUtils)  {
     this.jwtUtils = jwtUtils;
@@ -34,7 +33,7 @@ public JwtAuthFilter(JwtUtils jwtUtils)  {
         String token = jwtUtils.extractTokenFromRequest(request);
         if (token != null && jwtUtils.validateToken(token)) {
             String username = jwtUtils.extractUsername(token);
-            UserDetails userDetails = new CustomUserDetails(userRepository.findUserByUsername(username));
+            UserDetails userDetails = customUserDetailService.loadUserByUsername(username);
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

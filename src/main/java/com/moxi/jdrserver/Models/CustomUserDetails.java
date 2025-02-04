@@ -8,11 +8,17 @@ import java.util.Collection;
 import java.util.List;
 
 public class CustomUserDetails implements UserDetails {
+	private final String username;
+	private final String password;
 
-private final User user;
-public CustomUserDetails( User user) {
+
+	private final User user;
+public CustomUserDetails(String username, String password, User user) {
+	this.username = username;
+	this.password = password;
 	this.user = user;
 }
+
 public User getUser() {
 	return user;
 }
@@ -21,15 +27,15 @@ public Collection<? extends GrantedAuthority> getAuthorities() {
 	return List.of();
 }
 
-@Override
-public String getPassword() {
-	return "";
-}
+	@Override
+	public String getPassword() {
+		return password;
+	}
 
-@Override
-public String getUsername() {
-	return "";
-}
+	@Override
+	public String getUsername() {
+		return username;
+	}
 
 
 @Override
