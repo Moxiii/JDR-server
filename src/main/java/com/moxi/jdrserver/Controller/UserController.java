@@ -21,7 +21,7 @@ import java.util.Map;
 @Slf4j
 // Sl4j c'est pour les log => utilisation log.warning("text") / log.debug("text") / log.info("text") + des variable sont injectables comme log.info("Utilisateur : " , user)
 @RestController
-@RequestMapping("user/") // tape sur localhost/user/...
+@RequestMapping("user/") // tape sur localhost:8080/user/...
 public class UserController {
     @Autowired
     private UserRepository userRepository;

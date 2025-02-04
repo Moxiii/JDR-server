@@ -1,13 +1,12 @@
 package com.moxi.jdrserver.Models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,6 +19,9 @@ public class User {
     private long id;
     private String username;
     private String password;
+
+    @OneToMany(mappedBy = "createdBy")
+    private List<Module> modules;
 
     public User() {
 
