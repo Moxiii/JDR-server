@@ -1,5 +1,6 @@
 package com.moxi.jdrserver.Controller;
 
+import com.moxi.jdrserver.Config.Manager.TokenManager;
 import com.moxi.jdrserver.Config.Utils.JwtUtils;
 import com.moxi.jdrserver.DTO.LoginRes;
 import com.moxi.jdrserver.Models.User;
@@ -26,29 +27,34 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
     @Autowired
     private JwtUtils jwtUtils;
+    @Autowired
+    private TokenManager tokenManager;
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user){
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         User existingUser = userService.findUserByUsername(user.getUsername());
         if(existingUser !=null){
-            if (passwordEncoder.matches(user.getPassword(), existingUser.getPassword())){
-                try{
-                    UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(existingUser.getUsername() , user.getPassword());
-                    Authentication authentication = authenticationManager.authenticate(token);
-                    if(authentication != null && authentication.isAuthenticated()){
-                        SecurityContext context = SecurityContextHolder.getContext();
-                        context.setAuthentication(authentication);
-                        String jwtToken = jwtUtils.generateToken(existingUser);
-                        LoginRes loginRes = new LoginRes();
-                        loginRes.setUsername(existingUser.getUsername());
-                        loginRes.setToken(jwtToken);
-                        return ResponseEntity.ok(loginRes);
+            String validToken = tokenManager.getValidToken(existingUser.getUsername());
+            if(validToken!=null){
+                return ResponseEntity.ok(new LoginRes(existingUser.getUsername(), validToken));
+            }else {
+                if (passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
+                    try {
+                        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(existingUser.getUsername(), user.getPassword());
+                        Authentication authentication = authenticationManager.authenticate(token);
+                        if (authentication != null && authentication.isAuthenticated()) {
+                            SecurityContext context = SecurityContextHolder.getContext();
+                            context.setAuthentication(authentication);
+                            String jwtToken = jwtUtils.generateToken(existingUser);
+                            tokenManager.addToken(existingUser.getUsername() , jwtToken);
+                            return ResponseEntity.ok(new LoginRes(existingUser.getUsername() , jwtToken));
+                        }
+                    } catch (AuthenticationException e) {
+                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed");
                     }
-                } catch (AuthenticationException e) {
-                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed");
+                } else {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password");
                 }
-            }else{
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password");
             }
         }else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
