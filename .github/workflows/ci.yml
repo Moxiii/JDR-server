@@ -1,0 +1,41 @@
+name: Build and Test Java Project
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  check-pr-title:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Check PR Title
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          if [[ ! "$PR_TITLE" =~ ^(feat|fix|chore|docs|style|refactor|perf|test): ]]; then
+            echo "⛔️ ERREUR: Le titre de la PR doit commencer par feat:, fix:, chore:, docs:, etc."
+            exit 1
+          fi
+        shell: bash
+
+  build:
+    needs: check-pr-title
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: maven
+
+      - name: Build with Maven
+        run: mvn clean package
+
+
