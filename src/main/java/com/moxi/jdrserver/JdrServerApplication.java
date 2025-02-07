@@ -2,7 +2,6 @@ package com.moxi.jdrserver;
 
 import com.moxi.jdrserver.Models.User;
 import com.moxi.jdrserver.Repository.UserRepository;
-import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,14 +19,7 @@ public class JdrServerApplication {
         this.userRepository = userRepository;
     }
 
-    public static void main(String[] args) {
-
-        Dotenv dotenv = Dotenv.load();
-        System.setProperty("DB_HOST", Objects.requireNonNull(dotenv.get("DB_HOST")));
-        System.setProperty("DB_USER", Objects.requireNonNull(dotenv.get("DB_USER")));
-        System.setProperty("DB_PASSWORD", Objects.requireNonNull(dotenv.get("DB_PASSWORD")));
-        SpringApplication.run(JdrServerApplication.class, args);
-    }
+    public static void main(String[] args) { SpringApplication.run(JdrServerApplication.class, args);}
 
     @Bean
     public CommandLineRunner defaultDataInitializer() {

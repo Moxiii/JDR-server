@@ -9,6 +9,8 @@ import lombok.Setter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @Entity
@@ -17,9 +19,12 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     private String username;
     private String password;
+    private String email;
+    private Date createdAt;
+    private Date updatedAt;
 
     public User() {
 
