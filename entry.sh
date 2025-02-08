@@ -1,11 +1,13 @@
 #!/bin/bash
 set -e
-if [[ "$1" == "backend" ]];then
-  echo "Start mvn backend"
-  while inotifywait -r -e modify /app/src/main/;
-  do
-    mvn compile -o -DskipTests;
-  done >/dev/null 2>&1 &
 
-  mvn spring-boot:run
-fi
+case "$1" in
+  backend)
+    echo "Starting backend with Maven..."
+    mvnw spring-boot:run
+    ;;
+  *)
+    echo "Invalid argument. Use  'backend'."
+    exit 1
+    ;;
+esac
