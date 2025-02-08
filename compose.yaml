@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   server:
     container_name: JDR-Back
@@ -6,19 +5,33 @@ services:
       context: ..
       dockerfile: ./JDR-server/Dockerfile
     volumes:
-      - ../JDR-server/src:/app/Backend/src:rw
+      - jdr-backend-data:/app/Backend
+      - ~/.m2/repository:/root/.m2/repository
     depends_on:
        db:
           condition: service_healthy
     environment:
-      - SPRING_PROFILES_ACTIVE=dev
       - JAVA_OPTS=-Dspring.devtools.restart.enabled=true -Dspring.devtools.livereload.enabled=true
-      - CHOKIDAR_USEPOLLING=true
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/jdr
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
     restart: unless-stopped
     ports:
       - "8080:8080"
     networks:
       - Jdr-net
+    develop:
+      watch:
+        - action: sync+restart
+          path: ../JDR-server/src
+          target: ../app/Backend/src
+          ignore:
+            - "**/target/"
+            - "**/node_modules"
+        - action: sync+restart
+          path: ../JDR-server/application.properties
+          target: /app/Backend/application.properties
   db:
     container_name: JDR-db
     image: mysql:8.0.19
@@ -50,5 +63,6 @@ services:
       - Jdr-net
 volumes:
   db_data:
+  jdr-backend-data:
 networks:
   Jdr-net:
