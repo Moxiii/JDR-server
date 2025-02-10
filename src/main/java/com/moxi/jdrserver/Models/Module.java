@@ -1,9 +1,11 @@
 package com.moxi.jdrserver.Models;
 
+import com.moxi.jdrserver.DTO.ModuleDTO;
 import com.moxi.jdrserver.Enums.ModuleType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 
@@ -36,5 +38,17 @@ public class Module {
         this.createdBy = createdBy;
         this.type = type;
         this.isTemplate = isTemplate;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public Module(ModuleDTO moduleDTO, User createdBy) {
+        this.title = moduleDTO.getTitle();
+        this.description = moduleDTO.getDescription();
+        this.createdBy = createdBy;
+        this.type = moduleDTO.getType();
+        this.isTemplate = moduleDTO.getIsTemplate();
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 }
