@@ -1,13 +1,9 @@
 #!/bin/bash
-set -e
 
-case "$1" in
-  backend)
+if [ "$1" = "backend" ]; then
     echo "Starting backend with Maven..."
-    mvnw spring-boot:run
-    ;;
-  *)
-    echo "Invalid argument. Use  'backend'."
+    mvn spring-boot:run
+else
+    echo "Command not recognized"
     exit 1
-    ;;
-esac
+fi
