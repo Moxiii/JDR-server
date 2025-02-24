@@ -41,19 +41,19 @@ jobs:
           cache: maven
 
       - name: Build and run Docker Compose
-        run: |
+        run:
           docker-compose up --build -d
           echo "🕒 Waiting for MySQL to be ready..."
-          sleep 15  
-          docker ps  
+          sleep 15
+          docker ps
 
       - name: Run backend tests
-        run: |
+        run:
           echo "🚀 Running tests..."
           docker exec JDR-Back mvn test
 
       - name: Shutdown containers
         if: always()
-        run: |
+        run:
           echo "🛑 Stopping containers..."
           docker-compose down
