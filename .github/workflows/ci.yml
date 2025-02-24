@@ -41,24 +41,24 @@ jobs:
           cache: maven
 
       - name: Install Docker Compose
-        run: |
+        run:
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
       - name: Build and run Docker Compose
-        run: |
-          docker-compose up --build -d
+        run:
+          docker compose up --build -d
           echo "🕒 Waiting for MySQL to be ready..."
           sleep 15
           docker ps
 
       - name: Run backend tests
-        run: |
+        run:
           echo "🚀 Running tests..."
           docker exec JDR-Back mvn test
 
       - name: Shutdown containers
         if: always()
-        run: |
+        run:
           echo "🛑 Stopping containers..."
           docker-compose down
