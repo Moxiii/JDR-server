@@ -28,9 +28,13 @@ public class User {
     @OneToMany(mappedBy = "createdBy")
     private List<Module> modules;
 
+    @OneToOne(mappedBy = "user")
+    private UserProfile userProfile;
+
     public User() {
 
     }
+
     public User(String username, String password) {
         this.username = username;
         this.password = passwordEncoder.encode(password);
