@@ -47,17 +47,13 @@ jobs:
       - name: Build and run Docker Compose
         run:
           docker compose up --build -d
-          echo "🕒 Waiting for MySQL to be ready..."
-          sleep 15
           docker ps
 
       - name: Run backend tests
         run:
-          echo "🚀 Running tests..."
           docker exec JDR-Back mvn test
 
       - name: Shutdown containers
         if: always()
         run:
-          echo "🛑 Stopping containers..."
           docker-compose down
