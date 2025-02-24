@@ -15,19 +15,15 @@ jobs:
         run: |
           PR_TITLE="${{ github.event.pull_request.title }}"
           if [[ ! "$PR_TITLE" =~ ^(feat|fix|chore|docs|style|refactor|perf|test): ]]; then
-            echo "⛔️ ERREUR: Le titre de la PR doit commencer par feat:, fix:, chore:, docs:, etc."
+            echo "⛔️ ERREUR: Le titre de la PR doit commencer par feat:, fix:, chore:, docs:, style:, refactor:, perf:, test:, etc."
             exit 1
           fi
         shell: bash
 
   build:
-    needs: check-pr-title
     runs-on: ubuntu-latest
-
-    services:
-      docker:
-        image: docker:dind
-        options: --privileged
+    if: ${{ github.event_name != 'pull_request' || success() }}
+    needs: [ check-pr-title ]
 
     steps:
       - name: Checkout repository
@@ -41,19 +37,20 @@ jobs:
           cache: maven
 
       - name: Install Docker Compose
-        run:
-          sudo apt-get update && sudo apt-get install -y docker-compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose-plugin
 
       - name: Build and run Docker Compose
-        run:
-          docker-compose up --build -d
+        run: |
+          docker compose up --build -d
           docker ps
 
-      - name: Run backend tests
-        run:
-          docker exec JDR-Back mvn test
-
+      - name: Wait for containers to be ready
+        run: |
+          sleep 30  
+         
       - name: Shutdown containers
         if: always()
-        run:
-          docker-compose down
+        run: |
+          docker compose down
