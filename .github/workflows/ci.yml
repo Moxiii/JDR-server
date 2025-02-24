@@ -24,6 +24,11 @@ jobs:
     needs: check-pr-title
     runs-on: ubuntu-latest
 
+    services:
+      docker:
+        image: docker:dind
+        options: --privileged
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -35,7 +40,20 @@ jobs:
           java-version: '17'
           cache: maven
 
-      - name: Build with Docker
-        run: docker-compose up --build
+      - name: Build and run Docker Compose
+        run: |
+          docker-compose up --build -d
+          echo "🕒 Waiting for MySQL to be ready..."
+          sleep 15  
+          docker ps  
 
+      - name: Run backend tests
+        run: |
+          echo "🚀 Running tests..."
+          docker exec JDR-Back mvn test
 
+      - name: Shutdown containers
+        if: always()
+        run: |
+          echo "🛑 Stopping containers..."
+          docker-compose down
