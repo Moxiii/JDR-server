@@ -4,6 +4,7 @@ services:
     build:
       context: ..
       dockerfile: ./JDR-server/Dockerfile
+    command: ["mvn", "spring-boot:run"]
     volumes:
       - jdr-backend-data:/app/Backend
       - ~/.m2/repository:/root/.m2/repository

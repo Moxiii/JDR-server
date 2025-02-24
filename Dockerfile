@@ -4,4 +4,3 @@ COPY JDR-server/pom.xml ./
 RUN mvn install -DskipTests
 COPY JDR-server/src ./src
 EXPOSE 8080
-CMD ["mvn", "spring-boot:run"]
