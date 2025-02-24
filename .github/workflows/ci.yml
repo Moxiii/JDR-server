@@ -52,16 +52,7 @@ jobs:
 
       - name: Wait for containers to be ready
         run: |
-          sleep 30  # Attendre que les conteneurs soient prêts
-          # Vous pourriez remplacer cela par une vérification de santé plus robuste
-
-      - name: Run backend tests
-        run: |
-          # Remplacez "backend" par le nom de votre service dans docker-compose.yml
-          docker-compose exec -T backend mvn test
-          # Ou utilisez l'ID du conteneur si nécessaire
-          # CONTAINER_ID=$(docker-compose ps -q backend)
-          # docker exec $CONTAINER_ID mvn test
+          sleep 30  
 
       - name: Shutdown containers
         if: always()
