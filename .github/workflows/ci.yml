@@ -38,8 +38,7 @@ jobs:
 
       - name: Install Docker Compose
         run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose-plugin
+          sudo apt-get update && sudo apt-get install -y docker-compose-plugin
 
       - name: Build and run Docker Compose
         run: |
@@ -49,7 +48,7 @@ jobs:
       - name: Wait for containers to be ready
         run: |
           sleep 30  
-         
+
       - name: Shutdown containers
         if: always()
         run: |
