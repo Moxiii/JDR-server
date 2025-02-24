@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main, develop ]
   pull_request:
-    types: [opened, synchronize, reopened, edited]
+    types: [ opened, synchronize, reopened, edited ]
 
 jobs:
   check-pr-title:
@@ -35,7 +35,7 @@ jobs:
           java-version: '17'
           cache: maven
 
-      - name: Build with Maven
-        run: mvn clean package
+      - name: Build with Docker
+        run: docker-compose up --build
 
 
