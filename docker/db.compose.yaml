@@ -1,0 +1,19 @@
+services:
+  db:
+      container_name: JDR-db
+      image: mysql:8.0.19
+      restart: unless-stopped
+      healthcheck:
+        test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent" ]
+        interval: 3s
+        retries: 5
+        start_period: 30s
+      volumes:
+        - db_data:/var/lib/mysql
+      environment:
+        MYSQL_DATABASE: jdr
+        MYSQL_ROOT_PASSWORD: root
+      ports:
+        - "3307:3306"
+      networks:
+        - Jdr-net

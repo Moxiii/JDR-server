@@ -1,0 +1,30 @@
+services:
+  server:
+      container_name: JDR-Back
+      build:
+        context: ..
+        dockerfile: ../JDR-server/Dockerfile
+      command: ["mvn", "spring-boot:run"]
+      volumes:
+        - jdr-backend-data:/app/Backend
+        - ~/.m2/repository:/root/.m2/repository
+      depends_on:
+        db:
+            condition: service_healthy
+      env_file: ../.env
+      restart: unless-stopped
+      ports:
+        - "8080:8080"
+      networks:
+        - Jdr-net
+      develop:
+        watch:
+          - action: sync+restart
+            path: ../../JDR-server/src
+            target: ../../app/Backend/src
+            ignore:
+              - "**/target/"
+              - "**/node_modules"
+          - action: sync+restart
+            path: ../../JDR-server/application.properties
+            target: /app/Backend/application.properties
