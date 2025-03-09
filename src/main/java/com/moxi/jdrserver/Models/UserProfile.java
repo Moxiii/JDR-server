@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 public class UserProfile {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,6 +30,8 @@ public class UserProfile {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
+
+
 }
 
 

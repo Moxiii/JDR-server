@@ -23,4 +23,9 @@ public class UserProfileService {
         return userProfileRepository.findAll();
     }
 
+    public UserProfile findByUserId(Integer userId) {
+        UserProfile userProfile = userProfileRepository.findUserProfileByUserId(userId);
+        return userProfile;
+    }
+
 }
