@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main, develop ]
   pull_request:
-    types: [opened, synchronize, reopened, edited]
+    types: [ opened, synchronize, reopened, edited ]
 
 jobs:
   check-pr-title:
@@ -15,14 +15,15 @@ jobs:
         run: |
           PR_TITLE="${{ github.event.pull_request.title }}"
           if [[ ! "$PR_TITLE" =~ ^(feat|fix|chore|docs|style|refactor|perf|test): ]]; then
-            echo "⛔️ ERREUR: Le titre de la PR doit commencer par feat:, fix:, chore:, docs:, etc."
+            echo "⛔️ ERREUR: Le titre de la PR doit commencer par feat:, fix:, chore:, docs:, style:, refactor:, perf:, test:, etc."
             exit 1
           fi
         shell: bash
 
   build:
-    needs: check-pr-title
     runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'pull_request' || success() }}
+    needs: [ check-pr-title ]
 
     steps:
       - name: Checkout repository
@@ -35,7 +36,29 @@ jobs:
           java-version: '17'
           cache: maven
 
-      - name: Build with Maven
-        run: mvn clean package
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
+      - name: Install Docker Compose
+        run: |
+          DOCKER_COMPOSE_VERSION=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep 'tag_name' | cut -d\" -f4)
+          sudo curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
+
+      - name: Build and start containers
+        run: |
+          docker-compose up -d --build
+          docker ps
+
+      - name: Wait for containers to be ready
+        run: |
+          sleep 30
+
+      - name: Shutdown containers
+        if: always()
+        run: |
+          docker-compose down -v
