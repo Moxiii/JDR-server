@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RequireAuthorization
 @Slf4j
 @RestController
@@ -26,5 +25,5 @@ public class UserProfileController {
         UserProfile userProfile = userProfileService.findByUserId(id);
         return ResponseEntity.ok(userProfile);
     }
-    
+
 }
